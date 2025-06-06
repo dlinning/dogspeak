@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dogspeak</title>
+    <style>
+      /* Basic styling for the body to center content */
+      body {
+        font-family: "Inter", sans-serif; /* Using Inter font as requested */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh; /* Full viewport height */
+        background-color: #f0f4f8; /* Light blue-gray background */
+        margin: 0;
+        padding: 20px; /* Add some padding around the container */
+        box-sizing: border-box; /* Include padding in element's total width and height */
+      }
+
+      /* Container for the main application content */
+      .container {
+        background-color: #ffffff; /* White background for the card */
+        padding: 30px;
+        border-radius: 12px; /* More rounded corners */
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Stronger shadow */
+        width: 100%;
+        max-width: 550px; /* Increased max-width for better layout */
+        text-align: center;
+        border: 1px solid #e2e8f0; /* Subtle border */
+      }
+
+      /* Styling for the main heading */
+      h1 {
+        color: #2d3748; /* Darker text for heading */
+        margin-bottom: 25px;
+        font-size: 2.2em; /* Larger heading */
+        font-weight: 700; /* Bold heading */
+      }
+
+      /* Styling for the textarea input */
+      textarea {
+        width: calc(100% - 24px); /* Full width minus padding */
+        padding: 12px;
+        margin-bottom: 25px;
+        border: 1px solid #cbd5e0; /* Light gray border */
+        border-radius: 8px; /* Rounded corners for textarea */
+        font-size: 1.1em; /* Slightly larger font */
+        resize: vertical; /* Allow vertical resizing */
+        min-height: 100px; /* Minimum height for textarea */
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle inner shadow */
+      }
+
+      /* Container for voice selection radio buttons */
+      .voice-options {
+        text-align: left;
+        margin-bottom: 25px;
+        padding-left: 10px;
+        display: flex;
+        flex-direction: column; /* Stack radio buttons vertically */
+        gap: 12px; /* Space between radio button labels */
+      }
+
+      /* Styling for individual voice option labels */
+      .voice-options label {
+        display: flex; /* Use flex for alignment */
+        align-items: center; /* Align radio button and text */
+        font-size: 1.05em;
+        color: #4a5568; /* Medium gray text */
+        cursor: pointer; /* Indicate interactivity */
+      }
+
+      /* Styling for radio input itself */
+      .voice-options input[type="radio"] {
+        margin-right: 10px; /* Space between radio and label text */
+        /* Custom radio button appearance (optional, but enhances look) */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #667eea; /* Border color */
+        border-radius: 50%; /* Make it round */
+        outline: none;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0; /* Prevent shrinking on smaller screens */
+      }
+
+      /* Checked state for radio buttons */
+      .voice-options input[type="radio"]:checked {
+        background-color: #667eea; /* Fill color when checked */
+        border-color: #667eea; /* Border color when checked */
+      }
+
+      .voice-options input[type="radio"]:checked::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        background-color: white; /* Inner dot color */
+        border-radius: 50%;
+      }
+
+      /* Styling for the Translate button */
+      button {
+        background-color: #667eea; /* Primary purple color */
+        color: white;
+        padding: 14px 30px; /* More padding for a larger button */
+        border: none;
+        border-radius: 8px; /* Rounded corners */
+        cursor: pointer;
+        font-size: 1.2em; /* Larger font size */
+        font-weight: 600; /* Semi-bold text */
+        transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition */
+        box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3); /* Button shadow */
+      }
+
+      button:hover {
+        background-color: #5a67d8; /* Darker purple on hover */
+        transform: translateY(-2px); /* Slight lift effect */
+      }
+
+      button:active {
+        transform: translateY(0); /* Press down effect */
+        box-shadow: 0 2px 5px rgba(102, 126, 234, 0.4);
+      }
+
+      /* Styling for the translated output area */
+      .translation-output {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #e2e8f0; /* Light gray background */
+        border-radius: 8px;
+        text-align: left;
+        min-height: 80px; /* Increased minimum height */
+        word-wrap: break-word; /* Ensure long words break */
+        white-space: pre-wrap; /* Preserve whitespace and line breaks */
+        font-size: 1.1em;
+        color: #2d3748; /* Darker text color */
+        border: 1px dashed #a0aec0; /* Dashed border for distinct look */
+      }
+
+      /* Responsive adjustments for smaller screens */
+      @media (max-width: 600px) {
+        .container {
+          padding: 20px;
+          margin: 10px; /* Adjust margin for very small screens */
+        }
+
+        h1 {
+          font-size: 1.8em;
+        }
+
+        button {
+          padding: 12px 25px;
+          font-size: 1.1em;
+        }
+
+        textarea {
+          width: calc(100% - 20px);
+        }
+      }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Dogspeak Translator</h1>
+
+      <!-- Textarea for user to input their message -->
+      <textarea
+        id="humanMessage"
+        placeholder="Enter your message here to translate into dogspeak..."
+        rows="6"
+      ></textarea>
+
+      <!-- Radio button options for different dogspeak voices -->
+      <div class="voice-options">
+        <label>
+          <input type="radio" name="voice" value="tess" checked />
+          <strong>Tess</strong> (A dog with an overtly heavy Scandinavian
+          accent)
+        </label>
+        <label>
+          <input type="radio" name="voice" value="pixel" />
+          <strong>Pipsel</strong> (randomly changes casing of letters)
+        </label>
+        <label>
+          <input type="radio" name="voice" value="lanie" />
+          <strong>Lanie</strong> (translates to playful "doggo" speak)
+        </label>
+      </div>
+
+      <!-- Button to trigger the translation -->
+      <button id="translateButton">Translate</button>
+
+      <!-- Area to display the translated message -->
+      <div class="translation-output" id="dogspeakOutput">
+        Your translated message will appear here.
+      </div>
+    </div>
+
+    <script>
+      // Add event listener to the translate button
+      document
+        .getElementById("translateButton")
+        .addEventListener("click", function () {
+          const humanMessage = document.getElementById("humanMessage").value;
+          // Get the value of the currently checked radio button
+          const selectedVoice = document.querySelector(
+            'input[name="voice"]:checked'
+          ).value;
+          let translatedMessage = "";
+
+          // Perform translation based on the selected voice
+          switch (selectedVoice) {
+            case "tess":
+              translatedMessage = tessTranslate(humanMessage);
+              break;
+            case "pixel":
+              translatedMessage = pixelTranslate(humanMessage);
+              break;
+            case "lanie":
+              translatedMessage = lanieTranslate(humanMessage);
+              break;
+            default:
+              translatedMessage = "Please select a voice to translate.";
+          }
+
+          // Display the translated message in the output div
+          document.getElementById("dogspeakOutput").innerText =
+            translatedMessage;
+        });
+
+      /**
+       * Tess Translator: Applies phonetic/misspelling transformations and then adds random diacritics
+       * to English vowels only, to simulate a heavy Scandinavian accent.
+       * @param {string} message - The human message to translate.
+       * @returns {string} - The translated message with phonetic changes and diacritics.
+       */
+      function tessTranslate(message) {
+        // First, apply phonetic/misspelling transformations (case-insensitive)
+        let transformedMessage = message.toLowerCase();
+
+        // Specific word transformations for Scandinavian accent
+        transformedMessage = transformedMessage.replace(/\bhello\b/g, "hemlo");
+        transformedMessage = transformedMessage.replace(/\bdoug\b/g, "dubg"); // Changed to "Dubg" as requested
+        transformedMessage = transformedMessage.replace(
+          /\bi have\b/g,
+          "ja har"
+        );
+        transformedMessage = transformedMessage.replace(/\bvery\b/g, "væry");
+        transformedMessage = transformedMessage.replace(/\bgood\b/g, "goob");
+        transformedMessage = transformedMessage.replace(
+          /\bsecret\b/g,
+          "seemkrit"
+        );
+        transformedMessage = transformedMessage.replace(/\byou\b/g, "u");
+        transformedMessage = transformedMessage.replace(/\bthis\b/g, "dis");
+        transformedMessage = transformedMessage.replace(/\bthat\b/g, "dat");
+        transformedMessage = transformedMessage.replace(/\bwith\b/g, "vit"); // 'w' to 'v'
+        transformedMessage = transformedMessage.replace(/\bwhat\b/g, "vat");
+        transformedMessage = transformedMessage.replace(/\bwhy\b/g, "y");
+
+        // Map of English vowels to an array of possible Scandinavian-like diacritic characters
+        const diacriticsMap = {
+          a: ["å", "ä", "æ"],
+          e: ["é", "è", "ë", "ê", "æ", "ä"],
+          i: ["í", "ì", "ï", "î"],
+          o: ["ó", "ò", "ö", "ô", "õ", "ø"],
+          u: ["ú", "ù", "ü", "û"],
+        };
+        // Define a set of English vowels for quick lookup
+        const englishVowels = new Set(["a", "e", "i", "o", "u"]);
+
+        let translated = "";
+        // Iterate over each character in the transformed message
+        for (let i = 0; i < transformedMessage.length; i++) {
+          let char = transformedMessage[i];
+          let lowerChar = char.toLowerCase();
+
+          // Apply diacritics ONLY if the character is an English vowel
+          if (englishVowels.has(lowerChar) && diacriticsMap[lowerChar]) {
+            const options = diacriticsMap[lowerChar];
+            const randomDiacritic =
+              options[Math.floor(Math.random() * options.length)];
+            translated += randomDiacritic;
+          } else {
+            // If not a vowel or no diacritic mapping, keep the original character
+            translated += char;
+          }
+        }
+
+        // Re-capitalize the first letter of the entire translated string if the original message started with a capital
+        if (
+          message.length > 0 &&
+          message.charAt(0) === message.charAt(0).toUpperCase()
+        ) {
+          translated = translated.charAt(0).toUpperCase() + translated.slice(1);
+        }
+
+        return translated;
+      }
+
+      /**
+       * Pixel Translator: Randomly changes the casing of each letter in the message.
+       * @param {string} message - The human message to translate.
+       * @returns {string} - The translated message with random casing.
+       */
+      function pixelTranslate(message) {
+        let translated = "";
+        // Iterate over each character in the message
+        for (let char of message) {
+          // Check if the character is an alphabet letter
+          if (/[a-zA-Z]/.test(char)) {
+            // Randomly convert to lowercase or uppercase
+            translated +=
+              Math.random() < 0.5 ? char.toLowerCase() : char.toUpperCase();
+          } else {
+            // Keep non-alphabetic characters as they are
+            translated += char;
+          }
+        }
+        return translated;
+      }
+
+      /**
+       * Lanie Translator: Transforms the message into playful "doggo" speak using specific
+       * phrase replacements and common doggo slang.
+       * @param {string} message - The human message to translate.
+       * @returns {string} - The translated message in Lanie's doggo voice.
+       */
+      function lanieTranslate(message) {
+        // Start with a lowercase version of the message for consistent transformations
+        let translated = message.toLowerCase();
+
+        // Define specific Lanie translation rules using regex with global flag for all occurrences
+        const lanieRules = [
+          { regex: /hello/g, replacement: "henlo" },
+          { regex: /\bmom\b/g, replacement: "mommy" },
+          { regex: /squirrel/g, replacement: "SQUIRREL" },
+          { regex: /are you okay/g, replacement: "u okay" },
+          { regex: /what are you doing/g, replacement: "what doin" },
+          { regex: /you/g, replacement: "u" },
+          { regex: /a little/g, replacement: "libl" },
+          { regex: /very/g, replacement: "v" },
+          { regex: /thank you/g, replacement: "tank u" },
+          { regex: /yes/g, replacement: "yus" },
+          { regex: /no/g, replacement: "nu" },
+          { regex: /eat/g, replacement: "nom" },
+          { regex: /sleeping/g, replacement: "sleepin" },
+          { regex: /happy/g, replacement: "v happ" },
+          { regex: /sad/g, replacement: "v sad" },
+          { regex: /tired/g, replacement: "v xaust" },
+          { regex: /exhausted/g, replacement: "xaust" },
+          { regex: /exhausting/g, replacement: "xausting" },
+        ];
+
+        // Apply each transformation rule
+        for (const rule of lanieRules) {
+          translated = translated.replace(rule.regex, rule.replacement);
+        }
+
+        // Capitalize the first letter of the translated sentence for better readability
+        if (translated.length > 0) {
+          translated = translated.charAt(0).toUpperCase() + translated.slice(1);
+        }
+
+        return translated;
+      }
+    </script>
+  </body>
+</html>
